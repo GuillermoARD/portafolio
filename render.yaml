@@ -1,0 +1,42 @@
+# API (Express) en Render. El front va en Netlify (ver netlify.toml).
+# Render lee este archivo con "New → Blueprint". Las variables con sync: false
+# te las pide al crear el servicio; nunca las escribas aquí.
+services:
+  - type: web
+    name: portafolio-api
+    runtime: node
+    plan: free
+    region: virginia
+    buildCommand: npm install --include=dev && npm run build -w server
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DB_SSL
+        value: "true"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_USER
+        value: admin
+      - key: MAIL_PROVIDER
+        value: resend
+      - key: CONTACT_TO
+        value: guillermoadr29@gmail.com
+      - key: CONTACT_FROM
+        value: Portafolio <onboarding@resend.dev>
+      # URL de conexión de Neon (postgres://...)
+      - key: DATABASE_URL
+        sync: false
+      # Contraseña del panel /admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Tu link de Netlify, ej. https://guillermo-done.netlify.app
+      - key: CORS_ORIGIN
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false

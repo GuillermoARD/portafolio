@@ -1,0 +1,19 @@
+{
+  "name": "portafolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Portafolio de Guillermo Doñe (CyberKnight): React + Vite en el front, Express en el back.",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w client && npm run build -w server",
+    "start": "npm run start -w server",
+    "typecheck": "npm run typecheck -w client && npm run typecheck -w server"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

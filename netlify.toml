@@ -1,0 +1,14 @@
+# Front en Netlify. El back (Express) va aparte, en Render: pon su URL en la
+# variable VITE_API_URL desde el panel de Netlify (Site configuration → Environment variables).
+[build]
+  command = "npm run build -w client"
+  publish = "client/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# La app es una SPA: /admin y cualquier otra ruta cargan index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
