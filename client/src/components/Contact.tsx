@@ -85,10 +85,10 @@ export function Contact() {
   const email = socials.find((s) => s.kind === 'email');
 
   return (
-    <section id="contacto" className="section section--alt" aria-labelledby="contacto-title">
+    <section id="contacto" className="section" aria-labelledby="contacto-title">
       <div className="container contact">
         <div className="contact__intro" data-reveal>
-          <SectionHeading id="contacto-title" eyebrow="04" title="Contacto" />
+          <SectionHeading id="contacto-title" eyebrow="05" title="Contacto" />
           <p>
             ¿Tienes un proyecto, una vacante o una idea que quieras llevar a producción? Escríbeme y te responderé lo
             antes posible.

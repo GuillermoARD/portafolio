@@ -219,6 +219,14 @@
   border: 1px solid var(--border);
 }
 
+.admin-image img.admin-image--doc,
+.admin-image__empty.admin-image--doc {
+  width: 240px;
+  aspect-ratio: 1.414 / 1;
+  object-fit: contain;
+  background: var(--surface-2);
+}
+
 .admin-image__empty {
   display: grid;
   place-items: center;

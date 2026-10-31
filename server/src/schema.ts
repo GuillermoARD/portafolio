@@ -140,6 +140,29 @@ export const skillGroupSchema = z.object({
   sortOrder: z.coerce.number().int().min(0).max(9999).default(0),
 });
 
+export const certificateSchema = z.object({
+  title: z
+    .string({ error: 'El nombre del diploma es obligatorio.' })
+    .trim()
+    .min(2, 'El nombre debe tener al menos 2 caracteres.')
+    .max(120, 'El nombre no puede pasar de 120 caracteres.'),
+  issuer: z
+    .string({ error: 'La institución es obligatoria.' })
+    .trim()
+    .min(2, 'La institución debe tener al menos 2 caracteres.')
+    .max(100, 'La institución no puede pasar de 100 caracteres.'),
+  issuedAt: z
+    .string()
+    .trim()
+    .optional()
+    .nullable()
+    .transform((v) => (v ? v : null))
+    .refine((v) => v === null || /^\d{4}-(0[1-9]|1[0-2])$/.test(v), 'La fecha debe tener el formato AAAA-MM.'),
+  imageUrl: optionalImage.refine((v) => v !== null, 'Sube la imagen del diploma.'),
+  credentialUrl: optionalUrl,
+  sortOrder: z.coerce.number().int().min(0).max(9999).default(0),
+});
+
 export const idParamSchema = z.coerce.number().int().positive();
 
 // Convierte los errores de Zod en { campo: mensaje } para el front.

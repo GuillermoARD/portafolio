@@ -72,6 +72,31 @@ SkillGroup.init(
   { sequelize, tableName: 'skill_groups' },
 );
 
+export class Certificate extends Model<InferAttributes<Certificate>, InferCreationAttributes<Certificate>> {
+  declare id: CreationOptional<number>;
+  declare title: string;
+  declare issuer: string;
+  // Mes de obtención en formato "AAAA-MM", opcional.
+  declare issuedAt: string | null;
+  declare imageUrl: string;
+  // Enlace para verificar el diploma en la web de la institución, opcional.
+  declare credentialUrl: string | null;
+  declare sortOrder: CreationOptional<number>;
+}
+
+Certificate.init(
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    title: { type: DataTypes.STRING(120), allowNull: false },
+    issuer: { type: DataTypes.STRING(100), allowNull: false },
+    issuedAt: { type: DataTypes.STRING(7), allowNull: true },
+    imageUrl: { type: DataTypes.STRING(500), allowNull: false },
+    credentialUrl: { type: DataTypes.STRING(500), allowNull: true },
+    sortOrder: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+  },
+  { sequelize, tableName: 'certificates' },
+);
+
 export const listOrder: [string, string][] = [
   ['sortOrder', 'ASC'],
   ['id', 'ASC'],

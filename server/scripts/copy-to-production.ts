@@ -32,7 +32,7 @@ if (!/^(postgres|postgresql|mysql):\/\//.test(targetUrl)) {
 }
 
 // Se importan después de cargar .env.deploy para que la app se conecte a producción.
-const { sequelize, initDatabase, Project, SkillGroup } = await import('../src/db.js');
+const { sequelize, initDatabase, Certificate, Project, SkillGroup } = await import('../src/db.js');
 const { config } = await import('../src/config.js');
 const { parseCloudinaryUrl, uploadToCloudinary } = await import('../src/cloudinary.js');
 
@@ -45,6 +45,11 @@ const parseJson = <T>(value: unknown): T => (typeof value === 'string' ? JSON.pa
 
 const projects = await source.query<Row>('SELECT * FROM projects ORDER BY sortOrder, id', { type: QueryTypes.SELECT });
 const groups = await source.query<Row>('SELECT * FROM skill_groups ORDER BY sortOrder, id', { type: QueryTypes.SELECT });
+// La tabla de diplomas solo existe si el servidor local ya arrancó con esa versión.
+const hasCertificates = (await source.getQueryInterface().showAllTables()).includes('certificates');
+const certificates = hasCertificates
+  ? await source.query<Row>('SELECT * FROM certificates ORDER BY sortOrder, id', { type: QueryTypes.SELECT })
+  : [];
 
 // Sube cada imagen local una sola vez y devuelve su nueva URL.
 const migrated = new Map<string, string>();
@@ -106,6 +111,26 @@ for (const g of groups) {
   console.log(`Habilidades: ${g.title} (${skills.map((s) => s.name).join(', ')})`);
 }
 
+const newCertificates: {
+  title: string;
+  issuer: string;
+  issuedAt: string | null;
+  imageUrl: string;
+  credentialUrl: string | null;
+  sortOrder: number;
+}[] = [];
+for (const c of certificates) {
+  newCertificates.push({
+    title: String(c.title),
+    issuer: String(c.issuer),
+    issuedAt: (c.issuedAt as string | null) ?? null,
+    imageUrl: (await migrateImage(c.imageUrl)) ?? String(c.imageUrl),
+    credentialUrl: (c.credentialUrl as string | null) ?? null,
+    sortOrder: Number(c.sortOrder),
+  });
+  console.log(`Diploma: ${c.title} (${c.issuer})`);
+}
+
 if (!confirmed) {
   console.log('\nNo se ha copiado nada. Revisa la lista y vuelve a ejecutar con --yes.');
   await source.close();
@@ -119,8 +144,12 @@ await sequelize.transaction(async (transaction) => {
   await Project.bulkCreate(newProjects, { transaction });
   // Los logos ya vienen resueltos de la BD local; se guardan tal cual.
   await SkillGroup.bulkCreate(newGroups, { transaction });
+  await Certificate.destroy({ where: {}, transaction });
+  await Certificate.bulkCreate(newCertificates, { transaction });
 });
 
-console.log(`\nListo: ${newProjects.length} proyectos y ${newGroups.length} grupos copiados a producción.`);
+console.log(
+  `\nListo: ${newProjects.length} proyectos, ${newGroups.length} grupos y ${newCertificates.length} diplomas copiados a producción.`,
+);
 await source.close();
 await sequelize.close();

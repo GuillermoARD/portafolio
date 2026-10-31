@@ -5,9 +5,10 @@ import { clearToken, createAdminClient, loadToken } from './adminApi';
 import { LoginForm } from './LoginForm';
 import { ProjectsManager } from './ProjectsManager';
 import { SkillsManager } from './SkillsManager';
+import { CertificatesManager } from './CertificatesManager';
 import './admin.css';
 
-type Tab = 'projects' | 'skills';
+type Tab = 'projects' | 'skills' | 'certificates';
 
 export default function AdminApp() {
   const [token, setToken] = useState<string | null>(loadToken);
@@ -68,6 +69,7 @@ export default function AdminApp() {
             [
               ['projects', 'Proyectos'],
               ['skills', 'Habilidades'],
+              ['certificates', 'Diplomas'],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -86,7 +88,9 @@ export default function AdminApp() {
         </div>
 
         <section id={`panel-${tab}`} role="tabpanel" aria-labelledby={`tab-${tab}`}>
-          {tab === 'projects' ? <ProjectsManager client={client} /> : <SkillsManager client={client} />}
+          {tab === 'projects' && <ProjectsManager client={client} />}
+          {tab === 'skills' && <SkillsManager client={client} />}
+          {tab === 'certificates' && <CertificatesManager client={client} />}
         </section>
       </main>
     </div>

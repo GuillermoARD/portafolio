@@ -1,4 +1,5 @@
 import { About } from './components/About';
+import { Certificates } from './components/Certificates';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
@@ -21,6 +22,7 @@ export default function App() {
         <About />
         <Skills />
         <Projects />
+        <Certificates />
         <Contact />
       </main>
       <Footer />

@@ -1,4 +1,4 @@
-import type { ApiResult, Project, SkillGroup } from '../types';
+import type { ApiResult, Certificate, Project, SkillGroup } from '../types';
 import type { ContactValues } from './validateContact';
 
 const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
@@ -36,3 +36,12 @@ export const sendContact = (values: ContactValues) =>
 export const getProjects = () => request<{ projects: Project[] }>('/api/projects');
 
 export const getSkills = () => request<{ skillGroups: SkillGroup[] }>('/api/skills');
+
+export const getCertificates = () => request<{ certificates: Certificate[] }>('/api/certificates');
+
+// "2025-03" → "marzo 2025"
+export function formatMonth(value: string | null): string {
+  if (!value) return '';
+  const [year, month] = value.split('-').map(Number);
+  return new Intl.DateTimeFormat('es', { month: 'long', year: 'numeric' }).format(new Date(year, month - 1, 1));
+}

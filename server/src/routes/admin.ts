@@ -4,8 +4,15 @@ import type { ModelStatic, Model } from 'sequelize';
 import type { z } from 'zod';
 import { adminEnabled, checkCredentials, createToken, requireAdmin } from '../auth.js';
 import { findBrandLogo, uploadedLogos } from '../brandIcons.js';
-import { Project, SkillGroup, listOrder } from '../db.js';
-import { idParamSchema, loginSchema, projectSchema, skillGroupSchema, toFieldErrors } from '../schema.js';
+import { Certificate, Project, SkillGroup, listOrder } from '../db.js';
+import {
+  certificateSchema,
+  idParamSchema,
+  loginSchema,
+  projectSchema,
+  skillGroupSchema,
+  toFieldErrors,
+} from '../schema.js';
 import { imageUpload, removeUploadedImage, saveImage } from '../uploads.js';
 
 export const adminRouter = Router();
@@ -127,6 +134,13 @@ crud('/skills', SkillGroup, skillGroupSchema, {
   onDelete: async (item) => {
     await Promise.all(groupUploads({ icon: item.get('icon'), skills: item.get('skills') }).map(removeUploadedImage));
   },
+});
+
+crud('/certificates', Certificate, certificateSchema, {
+  onReplace: async (before, after) => {
+    if (before.get('imageUrl') !== after.imageUrl) await removeUploadedImage(before.get('imageUrl') as string);
+  },
+  onDelete: (item) => removeUploadedImage(item.get('imageUrl') as string),
 });
 
 adminRouter.get('/brand-logo', (req, res) => {

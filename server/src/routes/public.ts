@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { config } from '../config.js';
-import { Project, SkillGroup, listOrder } from '../db.js';
+import { Certificate, Project, SkillGroup, listOrder } from '../db.js';
 import { sendContactMessage } from '../mailer.js';
 import { contactSchema, toFieldErrors } from '../schema.js';
 
@@ -19,6 +19,11 @@ publicRouter.get('/projects', async (_req, res) => {
 publicRouter.get('/skills', async (_req, res) => {
   const skillGroups = await SkillGroup.findAll({ order: listOrder });
   res.json({ ok: true, skillGroups });
+});
+
+publicRouter.get('/certificates', async (_req, res) => {
+  const certificates = await Certificate.findAll({ order: listOrder });
+  res.json({ ok: true, certificates });
 });
 
 const contactLimiter = rateLimit({

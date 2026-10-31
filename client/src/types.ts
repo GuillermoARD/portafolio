@@ -26,6 +26,16 @@ export interface SkillGroup {
   sortOrder: number;
 }
 
+export interface Certificate {
+  id: number;
+  title: string;
+  issuer: string;
+  issuedAt: string | null;
+  imageUrl: string;
+  credentialUrl: string | null;
+  sortOrder: number;
+}
+
 export type FieldErrors = Record<string, string>;
 
 export type ApiResult<T> = ({ ok: true } & T) | { ok: false; error: string; fieldErrors?: FieldErrors; status?: number };
