@@ -21,8 +21,6 @@ services:
         value: "true"
       - key: SESSION_SECRET
         generateValue: true
-      - key: ADMIN_USER
-        value: admin
       - key: MAIL_PROVIDER
         value: resend
       - key: CONTACT_TO
@@ -32,8 +30,13 @@ services:
       # URL de conexión de Neon (postgres://...)
       - key: DATABASE_URL
         sync: false
-      # Contraseña del panel /admin
+      # Usuario y contraseña del panel /admin
+      - key: ADMIN_USER
+        sync: false
       - key: ADMIN_PASSWORD
+        sync: false
+      # Imágenes subidas desde el panel (cloudinary://key:secret@cloud)
+      - key: CLOUDINARY_URL
         sync: false
       # Tu link de Netlify, ej. https://guillermo-done.netlify.app
       - key: CORS_ORIGIN

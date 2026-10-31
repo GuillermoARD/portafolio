@@ -44,6 +44,8 @@ export const config = {
     ssl: (env.DB_SSL ?? 'false') === 'true',
     sqliteFile: env.SQLITE_FILE ?? 'data/portafolio.sqlite',
   },
+  // Formato: cloudinary://API_KEY:API_SECRET@CLOUD_NAME (Cloudinary → Dashboard → API environment variable)
+  cloudinaryUrl: env.CLOUDINARY_URL ?? '',
   admin: {
     user: env.ADMIN_USER ?? 'admin',
     password: env.ADMIN_PASSWORD ?? '',

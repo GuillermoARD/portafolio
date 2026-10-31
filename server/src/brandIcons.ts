@@ -92,5 +92,5 @@ export function uploadedLogos(skills: unknown): string[] {
   if (!Array.isArray(skills)) return [];
   return skills
     .map((s) => (s && typeof s === 'object' && (s as Skill).logo?.type === 'image' ? ((s as Skill).logo as ImageLogo).url : null))
-    .filter((url): url is string => Boolean(url?.startsWith('/uploads/')));
+    .filter((url): url is string => Boolean(url));
 }

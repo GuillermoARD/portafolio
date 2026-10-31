@@ -122,6 +122,38 @@ git push -u origin main
 
 ## Despliegue
 
+### Configuración actual: Netlify (front) + Render (API) + Neon (BD) + Cloudinary (imágenes)
+
+Todo con plan gratuito. `render.yaml` y `netlify.toml` ya traen la configuración.
+
+1. **Neon** ([neon.tech](https://neon.tech)): crea un proyecto y copia la *connection string* (`postgres://...`).
+2. **Cloudinary** ([cloudinary.com](https://cloudinary.com)): en el Dashboard copia la *API environment variable* (`cloudinary://...`).
+3. **Render** ([render.com](https://render.com)): **New → Blueprint**, elige el repo y rellena las variables que te pide:
+   - `DATABASE_URL` (la de Neon)
+   - `CLOUDINARY_URL`
+   - `ADMIN_USER` y `ADMIN_PASSWORD`
+   - `RESEND_API_KEY`
+   - `CORS_ORIGIN` (pon cualquier valor por ahora; lo cambias en el paso 5)
+4. **Netlify** ([netlify.com](https://netlify.com)): **Add new site → Import from Git**, elige el repo y añade la variable `VITE_API_URL` con la URL de Render (`https://portafolio-api-xxxx.onrender.com`).
+5. Vuelve a Render y pon en `CORS_ORIGIN` la URL de Netlify (`https://tu-sitio.netlify.app`).
+6. **Copia tus datos locales a producción.** Crea `server/.env.deploy` (no se sube a git) con:
+   ```
+   DATABASE_URL=postgres://...   (la de Neon)
+   DB_SSL=true
+   CLOUDINARY_URL=cloudinary://...
+   ```
+   Después ejecuta:
+   ```bash
+   npm run db:copy -w server
+   ```
+   Te enseña qué va a copiar sin tocar nada. Si está bien, ejecuta:
+   ```bash
+   npm run db:copy -w server -- --yes
+   ```
+   Sube tus imágenes locales a Cloudinary y **reemplaza** los proyectos y las habilidades de producción.
+
+Con `CLOUDINARY_URL` configurada, lo que subas desde el panel en producción va a Cloudinary y no se pierde aunque Render reinicie el servidor.
+
 ### Opción A: un solo servicio en Render, la más simple
 
 El back sirve también el front ya compilado, en el mismo dominio y sin CORS.

@@ -10,7 +10,7 @@ import { config } from './config.js';
 import { initDatabase } from './db.js';
 import { adminRouter } from './routes/admin.js';
 import { publicRouter } from './routes/public.js';
-import { UploadError, uploadsDir } from './uploads.js';
+import { UploadError, uploadsDir, uploadsTarget } from './uploads.js';
 
 const app = express();
 
@@ -88,4 +88,5 @@ app.listen(config.port, () => {
       ? `[admin] Panel activo para el usuario "${config.admin.user}" en /admin`
       : '[admin] Panel DESACTIVADO: define ADMIN_PASSWORD en server/.env para activarlo.',
   );
+  console.log(`[uploads] Las imágenes se guardan en: ${uploadsTarget}`);
 });

@@ -6,7 +6,7 @@ import { adminEnabled, checkCredentials, createToken, requireAdmin } from '../au
 import { findBrandLogo, uploadedLogos } from '../brandIcons.js';
 import { Project, SkillGroup, listOrder } from '../db.js';
 import { idParamSchema, loginSchema, projectSchema, skillGroupSchema, toFieldErrors } from '../schema.js';
-import { imageUpload, removeUploadedImage } from '../uploads.js';
+import { imageUpload, removeUploadedImage, saveImage } from '../uploads.js';
 
 export const adminRouter = Router();
 
@@ -134,10 +134,15 @@ adminRouter.get('/brand-logo', (req, res) => {
   res.json({ ok: true, logo: findBrandLogo(name) });
 });
 
-adminRouter.post('/upload', imageUpload.single('image'), (req, res) => {
+adminRouter.post('/upload', imageUpload.single('image'), async (req, res) => {
   if (!req.file) {
     res.status(400).json({ ok: false, error: 'No se recibió ninguna imagen.' });
     return;
   }
-  res.status(201).json({ ok: true, url: `/uploads/${req.file.filename}` });
+  try {
+    res.status(201).json({ ok: true, url: await saveImage(req.file) });
+  } catch (error) {
+    console.error('[uploads] Error guardando la imagen:', error);
+    res.status(502).json({ ok: false, error: 'No se pudo guardar la imagen. Inténtalo de nuevo.' });
+  }
 });
